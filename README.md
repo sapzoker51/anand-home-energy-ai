@@ -3,17 +3,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from io import StringIO
 
-# Page Configuration
+# ================== PAGE CONFIG ==================
 st.set_page_config(
     page_title="Anand Shreekar Home Energy AI",
     page_icon="⚡",
-    layout="centered"
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
 st.title("⚡ Anand Shreekar Home Energy AI")
-st.markdown("**Real LADWP Data Dashboard** | Los Angeles, California")
+st.markdown("**Real LADWP Billing Dashboard** — Los Angeles, California")
 
-# Your Real Data
+# ================== YOUR REAL DATA ==================
 data = """Billing_Periods,Number_of_Days,Tier_1,Tier_2,Tier_3,Total_kWh,Average_Daily_Use
 03/14/2025 - 05/09/2025,56,649,0,649,649,11.59
 05/09/2025 - 07/12/2025,64,1000,724,0,1724,26.94
@@ -24,11 +25,11 @@ data = """Billing_Periods,Number_of_Days,Tier_1,Tier_2,Tier_3,Total_kWh,Average_
 
 df = pd.read_csv(StringIO(data))
 
-# Table
+# ================== TABLE ==================
 st.subheader("📋 Detailed Usage History")
 st.dataframe(df, use_container_width=True)
 
-# Charts
+# ================== CHARTS ==================
 col1, col2 = st.columns(2)
 
 with col1:
@@ -37,7 +38,7 @@ with col1:
     tier_totals = [df['Tier_1'].sum(), df['Tier_2'].sum(), df['Tier_3'].sum()]
     labels = ['Tier 1 (Cheapest)', 'Tier 2', 'Tier 3 (Most Expensive)']
     colors = ['#22c55e', '#eab308', '#ef4444']
-    ax1.pie(tier_totals, labels=labels, autopct='%1.1f%%', colors=colors, startangle=90, explode=(0.1, 0, 0))
+    ax1.pie(tier_totals, labels=labels, autopct='%1.1f%%', colors=colors, explode=(0.1, 0, 0))
     st.pyplot(fig1)
 
 with col2:
@@ -49,30 +50,27 @@ with col2:
     ax2.set_ylabel('Avg Daily Use (kWh)')
     st.pyplot(fig2)
 
-# Summary & Bill Estimator
+# ================== SUMMARY & BILL ==================
 st.subheader("🔬 Executive Summary")
 col3, col4 = st.columns(2)
 
 with col3:
     st.metric("Annual Avg Daily Use", f"{df['Average_Daily_Use'].mean():.2f} kWh/day")
-    st.metric("Peak Summer", f"{df['Average_Daily_Use'].max():.2f} kWh/day")
+    st.metric("Peak Summer Daily Use", f"{df['Average_Daily_Use'].max():.2f} kWh/day")
 
 with col4:
-    st.metric("Summer vs Spring Ratio", f"{df['Average_Daily_Use'].iloc[1:4].mean() / df['Average_Daily_Use'].iloc[0]:.2f}x")
+    ratio = df['Average_Daily_Use'].iloc[1:4].mean() / df['Average_Daily_Use'].iloc[0]
+    st.metric("Summer vs Spring Ratio", f"{ratio:.2f}x")
     st.metric("Tier 2 Exposure", f"{df['Tier_2'].sum() / df['Total_kWh'].sum() * 100:.1f}%")
 
 # Bill Calculation
-tier1_rate = 0.15
-tier2_rate = 0.25
-tier3_rate = 0.35
-df['Est_Bill'] = (df['Tier_1'] * tier1_rate) + (df['Tier_2'] * tier2_rate) + (df['Tier_3'] * tier3_rate)
-total_cost = df['Est_Bill'].sum()
+total_cost = (df['Tier_1']*0.15 + df['Tier_2']*0.25 + df['Tier_3']*0.35).sum()
 
 st.subheader("💰 Estimated Annual Cost")
-st.success(f"**${total_cost:.2f}**")
+st.success(f"**${total_cost:,.2f}**")
 
-st.info(f"Potential Savings (5% reduction): **${total_cost*0.05:.2f}**")
-st.info(f"Potential Savings (10% reduction): **${total_cost*0.10:.2f}**")
+st.info(f"💡 Potential Savings (5% reduction): **${total_cost*0.05:,.2f}**")
+st.info(f"💡 Potential Savings (10% reduction): **${total_cost*0.10:,.2f}**")
 
 st.subheader("🚀 Strategic Recommendations")
 st.markdown("""
