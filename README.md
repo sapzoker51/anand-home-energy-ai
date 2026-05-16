@@ -7,8 +7,7 @@ from io import StringIO
 st.set_page_config(
     page_title="Anand Shreekar Home Energy AI",
     page_icon="⚡",
-    layout="centered",
-    initial_sidebar_state="collapsed"
+    layout="centered"
 )
 
 st.title("⚡ Anand Shreekar Home Energy AI")
@@ -76,8 +75,8 @@ st.subheader("🚀 Strategic Recommendations")
 st.markdown("""
 - **Primary focus**: Summer AC optimization (May–Sep) — highest ROI
 - Shift EV charging, laundry, dishwasher to off-peak hours
-- Target: Keep summer average below 24 kWh/day
+- Target: Keep summer average below 24 kWh/day  
 - Next step: Get daily/hourly data for advanced forecasting
 """)
 
-st.caption("Built by Anand Shreekar | Home Energy AI Tool")
+st.caption("Built by Anand Shreekar | Home Energy AI Tool v2")
